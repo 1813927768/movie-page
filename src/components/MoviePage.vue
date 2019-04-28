@@ -73,10 +73,10 @@
                                     search placeholder="Enter something..." />
                             </div>
                         </MenuItem>
-                        <MenuItem name="2" @click.native="click()">
+                        <!-- <MenuItem name="2" @click.native="click()">
                             <Icon type="ios-keypad"></Icon>
                             数据可视化
-                        </MenuItem>
+                        </MenuItem> -->
                         <MenuItem name="3" @click.native="click()">
                             <Icon type="ios-analytics"></Icon>
                             电影详情
@@ -209,7 +209,7 @@
                     },this)();
             },
             click: function(){
-                this.$Message.info("功能还未上线，敬请期待:)")
+                this.$Message.info("点击电影标题了解更多:)")
             },
             getJson: function(){
                 this.$http.get('static/data.json').then(

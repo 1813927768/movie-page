@@ -4,30 +4,28 @@
             v-model="show"
             :title="this.movieInfo.title"
             width="850"
-            footer-hide="false"
+            footer-hide
             >
             
             
             <div class="info_l">
                     <div class="__r_c_" pan="M14_Movie_Overview_BaseInfo"><strong>导演：</strong>
-                        <a href="http://people.mtime.com/897895/" target="_blank" rel="v:directedBy">弗兰克·德拉邦特</a>
+                        <a  target="_blank">{{list_split(this.movieInfo.directors).join()}}</a>
                     </div>
                     <div class="__r_c_" pan="M14_Movie_Overview_BaseInfo"><strong>编剧：</strong>
-                        <a  target="_blank">{{this.movieInfo.countries.join()}}</a>
+                        <a  target="_blank">{{list_split(this.movieInfo.writers).join()}}</a>
                     </div>
                     <div class="__r_c_" pan="M14_Movie_Overview_BaseInfo">
                         <strong>国家地区：</strong>
                             <a href="http://movie.mtime.com/movie/search/section/?nation=USA" target="_blank">{{this.movieInfo.countries.join()}}</a>
                     </div>
                   <div class="__r_c_" pan="M14_Movie_Overview_BaseInfo">
-                    <strong>发行公司：</strong>
-                    <a href="http://movie.mtime.com/company/151/" target="_blank">哥伦比亚电影公司</a>
-                    <a href="http://movie.mtime.com/12231/details.html#company" target="_blank">...</a>
-                  </div>
+                    <strong>片长：</strong>
+                    <span   target="_blank">{{this.movieInfo.duration}} min</span>
+                </div>
                     <div class="__r_c_" pan="M14_Movie_Overview_BaseInfo">
                         <strong>更多片名：</strong>
-                            <span>刺激1995</span>
-                            <span>月黑高飞</span>
+                            <span >{{this.movieInfo.aka.join()}}</span>
                             <a href="http://movie.mtime.com/12231/details.html" target="_self">...</a>
                     </div>
 
@@ -131,7 +129,7 @@ export default {
           }
       },
       list_split: function(list){
-
+          return list.map(x=>x.name).slice(0,3)
       }
   },
   data(){
