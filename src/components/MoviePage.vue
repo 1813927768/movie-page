@@ -53,6 +53,8 @@
     background-size:100% 100%;
     background-image: url(http://img31.mtime.cn/mg/2014/09/22/165333.90197273.jpg);
 }
+
+
 </style>
 <template>
     <div class="layout">

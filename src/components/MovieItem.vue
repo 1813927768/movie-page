@@ -4,6 +4,7 @@
             v-model="show"
             :title="this.movieInfo.title"
             width="850"
+            :styles="{top: '200px'}"
             footer-hide
             >
             
@@ -198,6 +199,16 @@ export default {
     background-position: -576px -187px;
     background-color: rgb(245, 244, 244);
 }
+
+.vertical-center-modal{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .ivu-modal{
+            top: 0;
+        }
+    }
 
 .movie{
     position: relative;
