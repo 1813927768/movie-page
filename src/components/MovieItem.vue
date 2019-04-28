@@ -1,5 +1,46 @@
 <template>
     <div class = movie>
+        <Modal
+            v-model="show"
+            :title="this.movieInfo.title"
+            width="850"
+            footer-hide="false"
+            >
+            
+            
+            <div class="info_l">
+                    <div class="__r_c_" pan="M14_Movie_Overview_BaseInfo"><strong>导演：</strong>
+                        <a href="http://people.mtime.com/897895/" target="_blank" rel="v:directedBy">弗兰克·德拉邦特</a>
+                    </div>
+                    <div class="__r_c_" pan="M14_Movie_Overview_BaseInfo"><strong>编剧：</strong>
+                        <a  target="_blank">{{this.movieInfo.countries.join()}}</a>
+                    </div>
+                    <div class="__r_c_" pan="M14_Movie_Overview_BaseInfo">
+                        <strong>国家地区：</strong>
+                            <a href="http://movie.mtime.com/movie/search/section/?nation=USA" target="_blank">{{this.movieInfo.countries.join()}}</a>
+                    </div>
+                  <div class="__r_c_" pan="M14_Movie_Overview_BaseInfo">
+                    <strong>发行公司：</strong>
+                    <a href="http://movie.mtime.com/company/151/" target="_blank">哥伦比亚电影公司</a>
+                    <a href="http://movie.mtime.com/12231/details.html#company" target="_blank">...</a>
+                  </div>
+                    <div class="__r_c_" pan="M14_Movie_Overview_BaseInfo">
+                        <strong>更多片名：</strong>
+                            <span>刺激1995</span>
+                            <span>月黑高飞</span>
+                            <a href="http://movie.mtime.com/12231/details.html" target="_self">...</a>
+                    </div>
+
+                    <div class="mov_pic">	
+                        <a :href="this.movieInfo.poster" target="_blank" :title="this.movieInfo.title">
+                            <img alt="暂无图片" width="96" height="128" class="img_box" :src="this.movieInfo.poster">
+                        </a>	
+                    </div>	
+                    
+            </div>
+            
+        </Modal>
+
         <div class="number">
             <em>{{this.rank+1}}</em>
         </div>	
@@ -10,7 +51,7 @@
         </div>	
         <div class="mov_con" v-if="!loading">	
             <h2 class="title">
-                <a class="c_blue" href="http://movie.mtime.com/12281/" target="_blank">
+                <a class="c_blue" @click="show=true" target="_blank">
                 {{this.movieInfo.title}}
                 </a>
             </h2>		
@@ -88,11 +129,15 @@ export default {
           else if(location == 1){
               return tmp[1]
           }
+      },
+      list_split: function(list){
+
       }
   },
   data(){
             return{
-                loading : true
+                loading : true,
+                show: false,
             }
         
     },
@@ -192,6 +237,30 @@ export default {
     display: inline;
     color: #f07200;
     line-height: 1em;
+}
+
+/* .info_l {
+    float: left;
+    display: inline;
+    width: 850px;
+    margin-left: 6px;
+} */
+
+.info_l .__r_c_ {
+    border-bottom: 1px dotted #999;
+    position: relative;
+    zoom: 1;
+    padding: 10px 0px 5px 10px;
+    line-height: 1.5em;
+    font-size: 13px;
+    width: 80%;
+}
+
+.info_l .mov_pic {
+    float: right;
+    position: relative;
+    bottom: 150px;
+    right: 20px;
 }
 
 .total2 {
