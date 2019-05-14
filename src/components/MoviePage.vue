@@ -54,6 +54,20 @@
     background-image: url(http://img31.mtime.cn/mg/2014/09/22/165333.90197273.jpg);
 }
 
+.notfound{
+    /* min-height: 400px; */
+    margin-top: 100px;
+    color: #666699;
+}
+
+.notfound .title{
+    font-size: 25px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: rgb(73, 73, 73);
+    padding: 0px;
+}
+
 
 </style>
 <template>
@@ -71,7 +85,7 @@
                                     v-model="input" 
                                     v-if="select" 
                                     class="search" 
-                                    @on-search="search"
+                                    @on-search="searchBackEnd"
                                     search placeholder="Enter something..." />
                             </div>
                         </MenuItem>
@@ -96,29 +110,35 @@
                                         <Icon type="ios-navigate"></Icon>
                                         语言
                                     </template>
-                                    <MenuItem name="1-1" @click.native="filterlanguage('en')">英语</MenuItem>
-                                    <MenuItem name="1-2" @click.native="filterlanguage('zh')">汉语</MenuItem>
-                                    <MenuItem name="1-3" @click.native="filterlanguage('other')">其他</MenuItem>
+                                    <MenuItem name="1-1" @click.native="filterlanguageBackEnd('英语')">英语</MenuItem>
+                                    <MenuItem name="1-2" @click.native="filterlanguageBackEnd('汉语')">汉语</MenuItem>
+                                    <MenuItem name="1-3" @click.native="filterlanguageBackEnd('日语')">日语</MenuItem>
                                 </Submenu>
                                 <Submenu name="2">
                                     <template slot="title">
                                         <Icon type="ios-keypad"></Icon>
                                         类型
                                     </template>
-                                    <MenuItem name="2-1" @click.native="filtertype('喜剧')">喜剧</MenuItem>
-                                    <MenuItem name="2-2" @click.native="filtertype('剧情')">剧情</MenuItem>
-                                    <MenuItem name="2-3" @click.native="filtertype('其他')">其他</MenuItem>
+                                    <MenuItem name="2-1" @click.native="filtertypeBackEnd('喜剧')">喜剧</MenuItem>
+                                    <MenuItem name="2-2" @click.native="filtertypeBackEnd('剧情')">剧情</MenuItem>
+                                    <MenuItem name="2-3" @click.native="filtertypeBackEnd('动作')">动作</MenuItem>
                                 </Submenu>
                             </Menu>
                         </Sider>
                         <Content :style="{padding: '5px', minHeight: '280px', background: '#fff'}">
-                            <div class="resultStats">找到 {{this.size}} 条结果<nobr> （用时 {{this.timeUse}} 秒）&nbsp;</nobr></div>
-                            <ul id="movie_list" v-if="!loading">
-                                <li v-for="(movie,index) in this.showData" :key="index">
-                                    <movie :movieInfo="movie" :rank="(currentPage-1)*pageSize+index"></movie>
-                                </li>
-                            </ul>
-                            <Page :total="size" :page-size="pageSize" @on-change="pageChange" show-elevator class="footer"/>
+                            <div class="resultStats">找到 {{this.size}} 条结果<nobr> （用时 {{this.timeUse}} 毫秒）&nbsp;</nobr></div>
+                            <div v-if="isSucc&&!loading">
+                                <ul id="movie_list" >
+                                    <li v-for="(movie,index) in this.showData" :key="index">
+                                        <movie :movieInfo="movie" :rank="(currentPage-1)*pageSize+index"></movie>
+                                    </li>
+                                </ul>
+                                <Page :total="size" :page-size="pageSize" @on-change="pageChangeBackEnd" show-elevator class="footer"/>
+                            </div>
+                            <div v-else class="notfound">
+                                <h1 class="notfound title">搜索 {{this.name}} </h1>
+                                <h3> 没有找到关于 “{{this.name}}”相关的内容，换个搜索词试试吧</h3>
+                            </div>
                         </Content>
                     </Layout>
                     
@@ -135,6 +155,12 @@
     import movieList from "@/components/data";
     import getExecTime from "@/components/getExeTime";
 
+    // var host = "http://localhost:8081/"
+    var host = "118.25.157.138:8081/"
+    var nameurl = host+"GetFilmByName";
+    var typeurl = host+"GetFilmByType";
+    var langurl = host+"GetFilmByLanguage"
+
     export default {
         data(){
             return{
@@ -143,18 +169,25 @@
                 pageSize: 10,
                 loading: false,
                 currentPage: 1,
-                timeUse: 0
+                timeUse: 0,
+                focus: "lan",  //当前显示的结果来自哪个接口
+                lan: "汉语",
+                type: "",
+                name: "",
+                showData: [],
+                size: 0,
+                isSucc: true,
             }
             
         },
         created: function(){
-            // this.getJson()
-            this.allData = movieList.sort(function(a,b) {
-                return b.rating.average - a.rating.average
-            });
-            this.sourceData = this.allData
-            console.log("movie loaded")
-            this.filterlanguage('zh')
+            // this.allData = movieList.sort(function(a,b) {
+            //     return b.rating.average - a.rating.average
+            // });
+            // this.sourceData = this.allData
+            // console.log("movie loaded")
+            // this.filterlanguage('zh')
+            this.filterlanguageBackEnd('汉语')
         },
         methods:{
             
@@ -184,6 +217,11 @@
                     that.pageChange(1)
                 },this)();
             },
+            filterlanguageBackEnd: function(lan){
+                this.lan = lan
+                this.focus = 'lan'
+                this.pageChangeBackEnd(1)
+            },
             filtertype: function(type){
                 var that = this
                 getExecTime(
@@ -209,6 +247,11 @@
                         
                         that.pageChange(1)
                     },this)();
+            },
+            filtertypeBackEnd(type){
+                this.type = type
+                this.focus = 'type'
+                this.pageChangeBackEnd(1)
             },
             click: function(){
                 this.$Message.info("点击电影标题了解更多:)")
@@ -244,6 +287,12 @@
                         that.loading = false
                 },this)();
             },
+            searchBackEnd(){
+                console.log(this.input)
+                this.focus = "name"
+                this.name = this.input
+                this.pageChangeBackEnd(1)
+            },
             //页数变化回调
             pageChange(index) {
                 this.size = this.sourceData.length
@@ -263,6 +312,55 @@
                 this.currentPage = index
                 this.loading = false
             },
+            pageChangeBackEnd(index) {
+                var that = this
+                getExecTime(
+                    function(){
+                    console.log("pageChangeBackEnd " + index)
+                    console.log("current focus "+that.focus)
+                    if(that.focus == "lan"){
+                        var requestUrl = langurl
+                        var para = that.lan
+                    }
+                    else if(that.focus == "name"){
+                        var requestUrl = nameurl
+                        var para = that.name
+                    }
+                    else if(that.focus == "type"){
+                        var requestUrl = typeurl
+                        var para = that.type
+                    }
+                    that.$http
+                    .get(requestUrl, {
+                        params: { 
+                            para: para,
+                            page: index
+                        }
+                    })
+                    .then(
+                        res => {
+                            // 响应成功回调
+                            // 请求结果有问题
+                            that.loading = true
+                            that.isSucc = true
+                            if(res.body.hasOwnProperty("err")){
+                                console.log("请求结果有问题")
+                                that.isSucc = false
+                            }
+                            that.showData = res.body.data
+                            that.size = res.body.total
+                            console.log(res.body);
+                            that.loading = false
+                        },
+                        res => {
+                            // 响应错误回调
+                            console.log("pageChange request fail");
+                        }
+                    );
+
+                    that.currentPage = index
+                },this)();
+            }
         },
         components: {
             movie: Item

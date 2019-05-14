@@ -11,14 +11,14 @@
             
             <div class="info_l">
                     <div class="__r_c_" pan="M14_Movie_Overview_BaseInfo"><strong>导演：</strong>
-                        <a  target="_blank">{{list_split(this.movieInfo.directors).join()}}</a>
+                        <a  target="_blank">{{this.movieInfo.directors}}</a>
                     </div>
                     <div class="__r_c_" pan="M14_Movie_Overview_BaseInfo"><strong>编剧：</strong>
-                        <a  target="_blank">{{list_split(this.movieInfo.writers).join()}}</a>
+                        <a  target="_blank">{{this.movieInfo.writers}}</a>
                     </div>
                     <div class="__r_c_" pan="M14_Movie_Overview_BaseInfo">
-                        <strong>国家地区：</strong>
-                            <a href="http://movie.mtime.com/movie/search/section/?nation=USA" target="_blank">{{this.movieInfo.countries.join()}}</a>
+                        <strong>语言：</strong>
+                            <a href="http://movie.mtime.com/movie/search/section/?nation=USA" target="_blank">{{this.movieInfo.languages}}</a>
                     </div>
                   <div class="__r_c_" pan="M14_Movie_Overview_BaseInfo">
                     <strong>片长：</strong>
@@ -26,7 +26,7 @@
                 </div>
                     <div class="__r_c_" pan="M14_Movie_Overview_BaseInfo">
                         <strong>更多片名：</strong>
-                            <span >{{this.movieInfo.aka.join()}}</span>
+                            <span >{{this.movieInfo.aka}}</span>
                             <a href="http://movie.mtime.com/12231/details.html" target="_self">...</a>
                     </div>
 
@@ -55,24 +55,24 @@
                 </a>
             </h2>		
             <div>导演： 
-                <div  v-for="(direc,index) in this.movieInfo.directors" :key="index" style="display:inline;">
+                <div  v-for="(direc,index) in this.movieInfo.directors.split(',')" :key="index" style="display:inline;">
                     <a class="c_blue" target="_blank">
-                        {{direc.name}}
+                        {{direc}}
                     </a>
                     &nbsp;
                 </div>
             </div>		
             <div>主演： 
-                <div  v-for="(actor,index) in this.movieInfo.casts.slice(0,3)" :key="index" style="display:inline;">
+                <div  v-for="(actor,index) in this.movieInfo.casts.split(',').slice(0,3)" :key="index" style="display:inline;">
                     <a class="c_blue" target="_blank">
-                        {{actor.name}}
+                        {{actor}}
                     </a>
                     &nbsp;
                 </div>		
             </div>		
             <div>类型：
                 <span class="c_blue">  
-                    <div v-for="(type,index) in this.movieInfo.genres" :key="index" style="display:inline;">                       
+                    <div v-for="(type,index) in this.movieInfo.genres.split(',')" :key="index" style="display:inline;">                       
                         <em v-if="index>0" class="c_blue"> / </em>
                         <a >{{type}}</a>
                     </div>	
@@ -83,8 +83,8 @@
         </div>	
                     
     <div class="mov_point">  
-        <b class="point"><span class="total">{{rating_split(this.movieInfo.rating.average,0)}}</span><span class="total2">.{{rating_split(this.movieInfo.rating.average,1)}}</span></b>  
-        <p> {{this.movieInfo.rating.rating_people}}人评分  </p>
+        <b class="point"><span class="total">{{rating_split(this.movieInfo.rating,0)}}</span><span class="total2">.{{rating_split(this.movieInfo.rating,1)}}</span></b>  
+        <p> {{this.movieInfo.rating_people}}人评分  </p>
     </div>
     </div>
 </template>
@@ -94,7 +94,7 @@
 export default {
   props: ["movieInfo","rank"],
   created(){
-        // console.log(this.movieInfo.directors)
+        // console.log(this.movieInfo.directors.split(','))
   },
   mounted(){
       console.log("mounted")
